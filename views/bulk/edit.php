@@ -1,9 +1,15 @@
 <style>
-    .bulkedit tr {
+    .bulkedit tbody tr {
         opacity: 0.5;
     }
-    .bulkedit tr.active {
+    .bulkedit tbody tr.active {
         opacity: 1;
+    }
+    .bulkedit .entsperren_hinweis {
+        display: none;
+    }
+    .bulkedit tbody tr.active input:not(:checked) + .entsperren_hinweis {
+        display: block;
     }
 </style>
 <? if (count($courses) > 0) : ?>
@@ -12,6 +18,12 @@
             <input type="hidden" name="sem_ids[]" value="<?= htmlReady($seminar_id) ?>">
         <? endforeach ?>
         <table class="default nohover">
+            <thead>
+                <tr>
+                    <th width="50%"><?= _("Zu verändernde Eigenschaft auswählen") ?></th>
+                    <th width="50%"><?= _("Neuen Wert festlegen") ?></th>
+                </tr>
+            </thead>
             <tbody>
                 <tr>
                     <td>
@@ -25,7 +37,8 @@
                         <input type="text"
                                name="teilnehmer"
                                value="<?= htmlReady($value)?>"
-                               placeholder="<?= htmlReady($value || $value === '0' ? $value : ($value === false ? _("Unterschiedliche Werte") : _("Wert eingeben")))?>">
+                               placeholder="<?= htmlReady($value || $value === '0' ? $value : ($value === false ? _("Unterschiedliche Werte") : _("Wert eingeben")))?>"
+                               onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
                     </td>
                 </tr>
                 <tr>
@@ -40,7 +53,8 @@
                         <input type="text"
                                name="ects"
                                value="<?= htmlReady($value)?>"
-                               placeholder="<?= htmlReady($value || $value === '0' ? $value : ($value === false ? _("Unterschiedliche Werte") : _("Wert eingeben")))?>">
+                               placeholder="<?= htmlReady($value || $value === '0' ? $value : ($value === false ? _("Unterschiedliche Werte") : _("Wert eingeben")))?>"
+                               onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
                     </td>
                 </tr>
                 <? if ($GLOBALS['perm']->have_perm("admin")) : ?>
@@ -62,7 +76,8 @@
                             }
                         } ?>
                         <? $value = $controller->getAverageValue($courses, "status") ?>
-                        <select name="status">
+                        <select name="status"
+                                onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
                             <? if (!$value) : ?>
                                 <option value=""><?= ($value === false ? " - " ._("Unterschiedliche Werte")." - " : _(" - ")) ?></option>
                             <? endif ?>
@@ -87,7 +102,8 @@
                         <input type="checkbox"
                                name="visible"
                                value="1"
-                               <?= $value == 1 ? " checked" : ""?>>
+                               <?= $value == 1 ? " checked" : ""?>
+                               onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
                         <? if ($value === false) : ?>
                             <div><?= _("Unterschiedliche Werte") ?></div>
                         <? endif ?>
@@ -116,7 +132,12 @@
                         <input type="checkbox"
                                name="locked"
                                value="1"
-                            <?= $value == 1 ? " checked" : ""?>>
+                            <?= $value == 1 ? " checked" : ""?>
+                               onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
+                        <div class="entsperren_hinweis">
+                            <?= Assets::img("icons/16/red/exclaim-circle", array('class' => "text-bottom"))?>
+                            <?= _("Alle Veranstaltungen werden entsperrt <br> und deren Anmeldeverfahren gelöscht.") ?>
+                        </div>
                         <? if ($value === false) : ?>
                             <div><?= _("Unterschiedliche Werte") ?></div>
                         <? endif ?>
@@ -126,6 +147,9 @@
         </table>
         <div data-dialog-button>
             <?= \Studip\Button::create(_("Speichern"), "save") ?>
+            <? if (!Request::isAjax()) : ?>
+                <?= \Studip\LinkButton::create(_("Abbrechen"), URLHelper::getURL("dispatch.php/admin/courses")) ?>
+            <? endif ?>
         </div>
     </form>
 <? endif ?>
