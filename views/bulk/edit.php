@@ -143,6 +143,31 @@
                         <? endif ?>
                     </td>
                 </tr>
+                <? if (count($lockrules)) : ?>
+                <tr>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="change[]" value="lock_rule" onChange="jQuery(this).closest('tr').toggleClass('active');">
+                            <?= _("Sperrebenen") ?>
+                        </label>
+                    </td>
+                    <td>
+                        <? $value = $controller->getAverageValue($courses, "lock_rule") ?>
+                        <select name="lock_rule"
+                                onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
+                            <? if (!$value) : ?>
+                                <option value=""><?= ($value === false ? " - " ._("Unterschiedliche Werte")." - " : _(" - ")) ?></option>
+                            <? endif ?>
+                                <option value="none"><?= _("Sperrebenen entfernen") ?></option>
+                            <? foreach ($lockrules as $lockrule) : ?>
+                                <option value="<?= htmlReady($lockrule->getId()) ?>"<?= $lockrule->getId() == $value ? " selected" : "" ?>>
+                                    <?= htmlReady($lockrule['name']) ?>
+                                </option>
+                            <? endforeach ?>
+                        </select>
+                    </td>
+                </tr>
+                <? endif ?>
             </tbody>
         </table>
         <div data-dialog-button>

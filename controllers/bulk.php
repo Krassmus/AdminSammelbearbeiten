@@ -11,6 +11,7 @@ class BulkController extends PluginController
             $this->sem_ids[] = Request::get("atleast");
         }
         $this->courses = Course::findMany($this->sem_ids);
+        $this->lockrules = LockRule::findAllByType("sem");
         if (count($this->courses) === 0) {
             PageLayout::postMessage(MessageBox::error(_("Sie haben keine Veranstaltungen ausgewählt.")));
         }
@@ -50,6 +51,13 @@ class BulkController extends PluginController
                                     $courseset->removeCourse($course->getId());
                                     $courseset->store();
                                 }
+                            }
+                        }
+                        if ($change === "lock_rule" && Request::option("lock_rule") && $GLOBALS['perm']->have_perm("admin")) {
+                            if (Request::option("lock_rule") === "none") {
+                                $course['lock_rule'] = null;
+                            } else {
+                                $course['lock_rule'] = Request::get("lock_rule");
                             }
                         }
                     }
