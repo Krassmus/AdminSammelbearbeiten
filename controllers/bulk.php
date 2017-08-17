@@ -12,6 +12,7 @@ class BulkController extends PluginController
         }
         $this->courses = Course::findMany($this->sem_ids);
         $this->lockrules = LockRule::findAllByType("sem");
+        $this->datafields = DataField::findBySQL("object_type = 'sem' ORDER BY priority");
         if (count($this->courses) === 0) {
             PageLayout::postMessage(MessageBox::error(_("Sie haben keine Veranstaltungen ausgewählt.")));
         }
@@ -60,6 +61,18 @@ class BulkController extends PluginController
                                 $course['lock_rule'] = Request::get("lock_rule");
                             }
                         }
+                        if (strpos($change, "datafield_") === 0) {
+                            $datafield_id = substr($change, strlen("datafield_"));
+                            $course_value = DatafieldEntryModel::findOneBySQL("datafield_id = ? AND range_id = ?", array($datafield_id, $course->getId()));
+                            if (!$course_value) {
+                                $course_value = new DatafieldEntryModel();
+                                $course_value['range_id'] = $course->getId();
+                                $course_value['datafield_id'] = $datafield_id;
+                                $course_value['sec_range_id'] = '';
+                            }
+                            $course_value->content = Request::get("datafield_".$datafield_id, '');
+                            $course_value->store();
+                        }
                     }
                     $course->store();
                 }
@@ -76,11 +89,23 @@ class BulkController extends PluginController
 
     public function getAverageValue($courses, $attribute) {
         $value = null;
-        foreach ($courses as $course) {
-            if ($value === null && $course[$attribute] !== '') {
-                $value = $course[$attribute];
-            } elseif($value != $course[$attribute]) {
-                $value = false;
+        if (strpos($attribute, "datafield_") === 0) {
+            $datafield_id = substr($attribute, strlen("datafield_"));
+            foreach ($courses as $course) {
+                $course_value = DatafieldEntryModel::findOneBySQL("datafield_id = ? AND range_id = ?", array($datafield_id, $course->getId()));
+                if ($value === null && $course_value->content !== '') {
+                    $value = $course_value->content;
+                } elseif ($value != $course_value->content) {
+                    $value = false;
+                }
+            }
+        } else {
+            foreach ($courses as $course) {
+                if ($value === null && $course[$attribute] !== '') {
+                    $value = $course[$attribute];
+                } elseif ($value != $course[$attribute]) {
+                    $value = false;
+                }
             }
         }
         return $value;

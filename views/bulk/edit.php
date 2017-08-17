@@ -168,6 +168,51 @@
                     </td>
                 </tr>
                 <? endif ?>
+                <? foreach ($datafields as $datafield) : ?>
+                    <tr>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="change[]" value="datafield_<?= $datafield->getId() ?>" onChange="jQuery(this).closest('tr').toggleClass('active');">
+                                <?= htmlReady($datafield['name']) ?>
+                            </label>
+                        </td>
+                        <td>
+                            <? $value = $controller->getAverageValue($courses, "datafield_".$datafield->getId()) ?>
+                            <? switch ($datafield->type) {
+                                case "bool" : ?>
+                                    <input type="checkbox"
+                                           name="datafield_<?= $datafield->getId() ?>"
+                                           value="1"
+                                           title="<?= htmlReady($value || $value === '0' ? $value : ($value === false ? _("Unterschiedliche Werte") : _("Wert eingeben")))?>"
+                                           onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');"
+                                        <?= $value > 0 ? ' checked' : "" ?>>
+                                <? break; case "selectbox" : ?>
+                                    <select
+                                           name="datafield_<?= $datafield->getId() ?>"
+                                           value="<?= htmlReady($value)?>"
+                                           title="<?= htmlReady($value || $value === '0' ? $value : ($value === false ? _("Unterschiedliche Werte") : _("Wert eingeben")))?>"
+                                           onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
+                                        <? foreach (explode("\n", $datafield['typeparam']) as $param) : ?>
+                                            <option value="<?= htmlReady($param) ?>"<?= $param == $value ? " selected" : "" ?>><?= htmlReady($param) ?></option>
+                                        <? endforeach ?>
+                                    </select>
+                                <? break; case "textarea" : ?>
+                                    <textarea
+                                           name="datafield_<?= $datafield->getId() ?>"
+                                           placeholder="<?= htmlReady($value || $value === '0' ? $value : ($value === false ? _("Unterschiedliche Werte") : _("Wert eingeben")))?>"
+                                           onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');"
+                                        ><?= htmlReady($value) ?></textarea>
+                                <? break; case "textline" : default : ?>
+                                    <input type="text"
+                                           name="datafield_<?= $datafield->getId() ?>"
+                                           value="<?= htmlReady($value)?>"
+                                           placeholder="<?= htmlReady($value || $value === '0' ? $value : ($value === false ? _("Unterschiedliche Werte") : _("Wert eingeben")))?>"
+                                           onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
+
+                                <? } ?>
+                        </td>
+                    </tr>
+                <? endforeach ?>
             </tbody>
         </table>
         <div data-dialog-button>
