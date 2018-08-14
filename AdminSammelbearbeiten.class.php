@@ -8,6 +8,8 @@ class AdminSammelbearbeiten extends StudIPPlugin implements SystemPlugin, AdminC
     }
 
     public function useMultimode() {
+        PageLayout::addScript($this->getPluginURL()."/assets/select2.min.js");
+        PageLayout::addStylesheet($this->getPluginURL()."/assets/select2.min.css");
         if (version_compare($GLOBALS['SOFTWARE_VERSION'], "3.4.99", ">=")) {
             //Damit es im Dialog geöffnet wird
             return \Studip\Button::createAccept(_("Bearbeiten"), "edit", array('data-dialog' => 1));

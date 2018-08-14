@@ -6,12 +6,15 @@ class BulkController extends PluginController
 {
     public function edit_action()
     {
+        PageLayout::addScript($this->plugin->getPluginURL()."/assets/select2.min.js");
+        PageLayout::addStylesheet($this->plugin->getPluginURL()."/assets/select2.min.css");
         $this->sem_ids = Request::getArray("sem_ids");
         if (count($this->sem_ids) === 0) {
             $this->sem_ids[] = Request::get("atleast");
         }
         $this->courses = Course::findMany($this->sem_ids);
         $this->lockrules = LockRule::findAllByType("sem");
+        $this->userdomains = UserDomain::getUserDomains();
         $this->datafields = DataField::findBySQL("object_type = 'sem' ORDER BY priority");
         if (count($this->courses) === 0) {
             PageLayout::postMessage(MessageBox::error(_("Sie haben keine Veranstaltungen ausgewählt.")));
@@ -61,6 +64,21 @@ class BulkController extends PluginController
                                 $course['lock_rule'] = Request::get("lock_rule");
                             }
                         }
+                        if ($change === "userdomains" && !in_array("", Request::getArray("userdomains"))) {
+                            $oldomains = array_map(
+                                function ($domain) { return $domain->getID(); },
+                                UserDomain::getUserDomainsForSeminar($course->getId())
+                            );
+                            $newdomains = Request::getArray("userdomains");
+                            foreach (array_diff($newdomains, $oldomains) as $newdomain_id) {
+                                $domain = new UserDomain($newdomain_id);
+                                $domain->addSeminar($course->getId());
+                            }
+                            foreach (array_diff($oldomains, $newdomains) as $olddomain_id) {
+                                $domain = new UserDomain($olddomain_id);
+                                $domain->removeSeminar($course->getId());
+                            }
+                        }
                         if (strpos($change, "datafield_") === 0) {
                             $datafield_id = substr($change, strlen("datafield_"));
                             $course_value = DatafieldEntryModel::findOneBySQL("datafield_id = ? AND range_id = ?", array($datafield_id, $course->getId()));
@@ -97,6 +115,23 @@ class BulkController extends PluginController
                     $value = $course_value->content;
                 } elseif ($value != $course_value->content) {
                     $value = false;
+                    return $value;
+                }
+            }
+        } elseif($attribute === "userdomains") {
+            $value = null;
+            foreach ($courses as $course) {
+                $domains = array_map(
+                    function ($domain) { return $domain->getID(); },
+                    UserDomain::getUserDomainsForSeminar($course->getId())
+                );
+                if ($value === null) {
+                    $value = $domains;
+                } else {
+                    if ((count(array_diff($value, $domains)) > 0) || (count(array_diff($domains, $value)) > 0)) {
+                        $value = false;
+                        return $value;
+                    }
                 }
             }
         } else {
@@ -105,6 +140,7 @@ class BulkController extends PluginController
                     $value = $course[$attribute];
                 } elseif ($value != $course[$attribute]) {
                     $value = false;
+                    return $value;
                 }
             }
         }

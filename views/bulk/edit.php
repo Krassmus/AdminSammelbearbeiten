@@ -13,7 +13,9 @@
     }
 </style>
 <? if (count($courses) > 0) : ?>
-    <form action="<?= PluginEngine::getLink($plugin, array(), "bulk/edit") ?>" method="post" class="default bulkedit">
+    <form action="<?= PluginEngine::getLink($plugin, array(), "bulk/edit") ?>"
+          method="post"
+          class="default bulkedit">
         <? foreach ($sem_ids as $seminar_id) : ?>
             <input type="hidden" name="sem_ids[]" value="<?= htmlReady($seminar_id) ?>">
         <? endforeach ?>
@@ -143,30 +145,55 @@
                         <? endif ?>
                     </td>
                 </tr>
+                <? if (count($userdomains)) : ?>
+                    <tr>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="change[]" value="userdomains" onChange="jQuery(this).closest('tr').toggleClass('active');">
+                                <?= _("Domänen") ?>
+                            </label>
+                        </td>
+                        <td>
+                            <? $value = $controller->getAverageValue($courses, "userdomains") ?>
+                            <select name="userdomains[]"
+                                    onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');"
+                                    multiple>
+                                <? if ($value === false) : ?>
+                                    <option value="" selected><?= ($value === false ? " - " ._("Unterschiedliche Werte")." - " : _(" - ")) ?></option>
+                                <? endif ?>
+                                <? foreach ($userdomains as $userdomain) : ?>
+                                    <option value="<?= htmlReady($userdomain->getID()) ?>"<?= in_array($userdomain->getID(), (array) $value) ? " selected" : "" ?>>
+                                        <?= htmlReady($userdomain->getName()) ?>
+                                    </option>
+                                <? endforeach ?>
+                            </select>
+                        </td>
+                    </tr>
+                <? endif ?>
                 <? if (count($lockrules)) : ?>
-                <tr>
-                    <td>
-                        <label>
-                            <input type="checkbox" name="change[]" value="lock_rule" onChange="jQuery(this).closest('tr').toggleClass('active');">
-                            <?= _("Sperrebenen") ?>
-                        </label>
-                    </td>
-                    <td>
-                        <? $value = $controller->getAverageValue($courses, "lock_rule") ?>
-                        <select name="lock_rule"
-                                onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
-                            <? if (!$value) : ?>
-                                <option value=""><?= ($value === false ? " - " ._("Unterschiedliche Werte")." - " : _(" - ")) ?></option>
-                            <? endif ?>
+                    <tr>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="change[]" value="lock_rule" onChange="jQuery(this).closest('tr').toggleClass('active');">
+                                <?= _("Sperrebenen") ?>
+                            </label>
+                        </td>
+                        <td>
+                            <? $value = $controller->getAverageValue($courses, "lock_rule") ?>
+                            <select name="lock_rule"
+                                    onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
+                                <? if (!$value) : ?>
+                                    <option value=""><?= ($value === false ? " - " ._("Unterschiedliche Werte")." - " : _(" - ")) ?></option>
+                                <? endif ?>
                                 <option value="none"><?= _("Sperrebenen entfernen") ?></option>
-                            <? foreach ($lockrules as $lockrule) : ?>
-                                <option value="<?= htmlReady($lockrule->getId()) ?>"<?= $lockrule->getId() == $value ? " selected" : "" ?>>
-                                    <?= htmlReady($lockrule['name']) ?>
-                                </option>
-                            <? endforeach ?>
-                        </select>
-                    </td>
-                </tr>
+                                <? foreach ($lockrules as $lockrule) : ?>
+                                    <option value="<?= htmlReady($lockrule->getId()) ?>"<?= $lockrule->getId() == $value ? " selected" : "" ?>>
+                                        <?= htmlReady($lockrule['name']) ?>
+                                    </option>
+                                <? endforeach ?>
+                            </select>
+                        </td>
+                    </tr>
                 <? endif ?>
                 <? foreach ($datafields as $datafield) : ?>
                     <tr>
@@ -222,4 +249,9 @@
             <? endif ?>
         </div>
     </form>
+    <script>
+        jQuery(function() {
+            jQuery(".bulkedit select[multiple]").select2();
+        });
+    </script>
 <? endif ?>
