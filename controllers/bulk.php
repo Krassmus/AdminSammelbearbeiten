@@ -36,6 +36,9 @@ class BulkController extends PluginController
                         if ($change === "visible") {
                             $course['visible'] = Request::int("visible", 0);
                         }
+                        if ($change === "start_time") {
+                            $course['start_time'] = Request::int("start_time", 0);
+                        }
                         if ($change === "locked") {
                             $seminar = new Seminar($course->getId());
                             if (Request::get("locked")) {

@@ -195,6 +195,28 @@
                         </td>
                     </tr>
                 <? endif ?>
+                <tr>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="change[]" value="start_time" onChange="jQuery(this).closest('tr').toggleClass('active');">
+                            <?= _("Startsemester") ?>
+                        </label>
+                    </td>
+                    <td>
+                        <? $value = $controller->getAverageValue($courses, "start_time") ?>
+                        <select name="start_time"
+                                onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
+                            <? if (!$value) : ?>
+                                <option value=""><?= ($value === false ? " - " ._("Unterschiedliche Werte")." - " : _(" - ")) ?></option>
+                            <? endif ?>
+                            <? foreach (Semester::getAll() as $semester) : ?>
+                                <option value="<?= htmlReady($semester['beginn']) ?>"<?= $semester['beginn'] == $value ? " selected" : "" ?>>
+                                    <?= htmlReady($semester['name']) ?>
+                                </option>
+                            <? endforeach ?>
+                        </select>
+                    </td>
+                </tr>
                 <? foreach ($datafields as $datafield) : ?>
                     <tr>
                         <td>
