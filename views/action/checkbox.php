@@ -4,7 +4,7 @@
             data-dialog
             name="atleast"
             value="<?= $course_id ?>"
-            title="<?= _("Ausgewählte Veranstaltungen bearbeiten") ?>">
+            title="<?= _("AusgewÃ¤hlte Veranstaltungen bearbeiten") ?>">
         <? if (version_compare($GLOBALS['SOFTWARE_VERSION'], "3.5.99", "<")) : ?>
             <?= Assets::img("icons/20/blue/edit", array('class' => "text-bottom")) ?>
         <? else : ?>

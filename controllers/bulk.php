@@ -17,7 +17,7 @@ class BulkController extends PluginController
         $this->userdomains = UserDomain::getUserDomains();
         $this->datafields = DataField::findBySQL("object_type = 'sem' ORDER BY priority");
         if (count($this->courses) === 0) {
-            PageLayout::postMessage(MessageBox::error(_("Sie haben keine Veranstaltungen ausgewählt.")));
+            PageLayout::postMessage(MessageBox::error(_("Sie haben keine Veranstaltungen ausgewÃ¤hlt.")));
         }
         if (Request::isPost() && Request::submitted("save")) {
             $changes = Request::getArray("change");
@@ -102,10 +102,6 @@ class BulkController extends PluginController
             $this->redirect(URLHelper::getURL("dispatch.php/admin/courses/index"));
         }
         PageLayout::setTitle(sprintf(_("Sammelbearbeiten von %s Veranstaltungen"), count($this->courses)));
-        if (Request::isAjax()) {
-            $this->set_layout(null);
-            $this->set_content_type('text/html;charset=windows-1252');
-        }
     }
 
     public function getAverageValue($courses, $attribute) {

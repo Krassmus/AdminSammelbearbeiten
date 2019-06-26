@@ -22,7 +22,7 @@
         <table class="default nohover">
             <thead>
                 <tr>
-                    <th width="50%"><?= _("Zu verändernde Eigenschaft auswählen") ?></th>
+                    <th width="50%"><?= _("Zu verÃ¤ndernde Eigenschaft auswÃ¤hlen") ?></th>
                     <th width="50%"><?= _("Neuen Wert festlegen") ?></th>
                 </tr>
             </thead>
@@ -138,7 +138,7 @@
                                onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
                         <div class="entsperren_hinweis">
                             <?= Assets::img("icons/16/red/exclaim-circle", array('class' => "text-bottom"))?>
-                            <?= _("Alle Veranstaltungen werden entsperrt <br> und deren Anmeldeverfahren gelöscht.") ?>
+                            <?= _("Alle Veranstaltungen werden entsperrt <br> und deren Anmeldeverfahren gelÃ¶scht.") ?>
                         </div>
                         <? if ($value === false) : ?>
                             <div><?= _("Unterschiedliche Werte") ?></div>
@@ -150,7 +150,7 @@
                         <td>
                             <label>
                                 <input type="checkbox" name="change[]" value="userdomains" onChange="jQuery(this).closest('tr').toggleClass('active');">
-                                <?= _("Domänen") ?>
+                                <?= _("DomÃ¤nen") ?>
                             </label>
                         </td>
                         <td>
