@@ -139,28 +139,13 @@
                             }
                         }
                         ?>
-<<<<<<< HEAD
-                        <input type="checkbox"
-                               name="locked"
-                               value="1"
-                            <?= $value == 1 ? " checked" : ""?>
-                               onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
-                        <div class="entsperren_hinweis">
-                            <?= Assets::img("icons/16/red/exclaim-circle", array('class' => "text-bottom"))?>
-                            <?= _("Alle Veranstaltungen werden entsperrt <br> und deren Anmeldeverfahren gelöscht.") ?>
-                        </div>
-                        <? if ($value === false) : ?>
-                            <div><?= _("Unterschiedliche Werte") ?></div>
-                        <? endif ?>
-=======
                         <select name="access" onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
                             <option value=""><?= $value === false ? _("Unterschiedliche Werte") : "" ?></option>
                             <option value="locked"<?= $value === "locked" ? " selected" : "" ?>><?= _("Gesperrt") ?></option>
                             <option value="unlocked"<?= $value === "unlocked" ? " selected" : "" ?>><?= _("Entsperrt") ?></option>
-                            <option value="writable"<?= $value === "writable" ? " selected" : "" ?>><?= _("Ã–ffentlicher Schreib- und Lesezugriff") ?></option>
-                            <option value="readable"<?= $value === "readable" ? " selected" : "" ?>><?= _("Ã–ffentlicher Lesezugriff") ?></option>
+                            <option value="writable"<?= $value === "writable" ? " selected" : "" ?>><?= _("Öffentlicher Schreib- und Lesezugriff") ?></option>
+                            <option value="readable"<?= $value === "readable" ? " selected" : "" ?>><?= _("Öffentlicher Lesezugriff") ?></option>
                         </select>
->>>>>>> 40a3675... add Schreibzugriff for nobody
                     </td>
                 </tr>
                 <? if (count($userdomains)) : ?>
