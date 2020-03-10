@@ -39,24 +39,39 @@ class BulkController extends PluginController
                         if ($change === "start_time") {
                             $course['start_time'] = Request::int("start_time", 0);
                         }
-                        if ($change === "locked") {
+                        if ($change === "access") {
                             $seminar = new Seminar($course->getId());
-                            if (Request::get("locked")) {
-                                if (!$seminar->isAdmissionLocked()) {
-                                    DBManager::get()->exec("START TRANSACTION");
+                            if (Request::get("access")) {
+                                if (Request::get("access") === "locked") {
+                                    if (!$seminar->isAdmissionLocked()) {
+                                        DBManager::get()->exec("START TRANSACTION");
+                                        $courseset = $seminar->getCourseSet();
+                                        if ($courseset) {
+                                            $courseset->removeCourse($course->getId());
+                                            $courseset->store();
+                                        }
+                                        CourseSet::addCourseToSet(CourseSet::getGlobalLockedAdmissionSetId(), $course->getId());
+                                        //Hier wurde gerade auch Schreib- und Lesezugriff entsprechend gesetzt.
+                                        DBManager::get()->exec("COMMIT");
+                                    }
+                                }
+                                if (in_array(Request::get("access"), ['unlocked', 'readable', 'writable'])) {
                                     $courseset = $seminar->getCourseSet();
                                     if ($courseset) {
                                         $courseset->removeCourse($course->getId());
                                         $courseset->store();
                                     }
-                                    CourseSet::addCourseToSet(CourseSet::getGlobalLockedAdmissionSetId(), $course->getId());
-                                    DBManager::get()->exec("COMMIT");
                                 }
-                            } else {
-                                $courseset = $seminar->getCourseSet();
-                                if ($courseset) {
-                                    $courseset->removeCourse($course->getId());
-                                    $courseset->store();
+                                if (Request::get("access") === "unlocked") {
+                                    $course['lesezugriff'] = 1;
+                                    $course['schreibzugriff'] = 1;
+                                }
+                                if (Request::get("access") === "writable") {
+                                    $course['lesezugriff'] = 0;
+                                    $course['schreibzugriff'] = 0;
+                                }
+                                if (Request::get("access") === "readable") {
+                                    $course['lesezugriff'] = 0;
                                 }
                             }
                         }

@@ -114,8 +114,8 @@
                 <tr>
                     <td>
                         <label>
-                            <input type="checkbox" name="change[]" value="locked" onChange="jQuery(this).closest('tr').toggleClass('active');">
-                            <?= _("Gesperrt") ?>
+                            <input type="checkbox" name="change[]" value="access" onChange="jQuery(this).closest('tr').toggleClass('active');">
+                            <?= _("Zugriffsrechte") ?>
                         </label>
                     </td>
                     <td>
@@ -123,7 +123,15 @@
                         $value = null;
                         foreach ($courses as $course) {
                             $seminar = new Seminar($course->getId());
-                            $coursevalue = $seminar->isAdmissionLocked() ? 1 : 0;
+                            $coursevalue = $seminar->isAdmissionLocked() ? "locked" : null;
+                            if ($coursevalue === null) {
+                                $coursevalue = !$course['lesezugriff'] && !$course['schreibzugriff']
+                                    ? "writable"
+                                    : (!$course['lesezugriff'] ? "readable" : null);
+                            }
+                            if ($coursevalue === null) {
+                                $coursevalue = $seminar->getCourseSet() === null ? "unlocked" : null;
+                            }
                             if ($value === null) {
                                 $value = $coursevalue;
                             } elseif($value != $coursevalue) {
@@ -131,18 +139,13 @@
                             }
                         }
                         ?>
-                        <input type="checkbox"
-                               name="locked"
-                               value="1"
-                            <?= $value == 1 ? " checked" : ""?>
-                               onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
-                        <div class="entsperren_hinweis">
-                            <?= Assets::img("icons/16/red/exclaim-circle", array('class' => "text-bottom"))?>
-                            <?= _("Alle Veranstaltungen werden entsperrt <br> und deren Anmeldeverfahren gelöscht.") ?>
-                        </div>
-                        <? if ($value === false) : ?>
-                            <div><?= _("Unterschiedliche Werte") ?></div>
-                        <? endif ?>
+                        <select name="access" onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
+                            <option value=""><?= $value === false ? _("Unterschiedliche Werte") : "" ?></option>
+                            <option value="locked"<?= $value === "locked" ? " selected" : "" ?>><?= _("Gesperrt") ?></option>
+                            <option value="unlocked"<?= $value === "unlocked" ? " selected" : "" ?>><?= _("Entsperrt") ?></option>
+                            <option value="writable"<?= $value === "writable" ? " selected" : "" ?>><?= _("Öffentlicher Schreib- und Lesezugriff") ?></option>
+                            <option value="readable"<?= $value === "readable" ? " selected" : "" ?>><?= _("Öffentlicher Lesezugriff") ?></option>
+                        </select>
                     </td>
                 </tr>
                 <? if (count($userdomains)) : ?>
