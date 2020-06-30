@@ -166,7 +166,7 @@
                                 <? endif ?>
                                 <? foreach ($userdomains as $userdomain) : ?>
                                     <option value="<?= htmlReady($userdomain->getID()) ?>"<?= in_array($userdomain->getID(), (array) $value) ? " selected" : "" ?>>
-                                        <?= htmlReady($userdomain->getName()) ?>
+                                        <?= htmlReady($userdomain['name']) ?>
                                     </option>
                                 <? endforeach ?>
                             </select>
