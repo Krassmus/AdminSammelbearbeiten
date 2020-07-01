@@ -3,3 +3,4 @@ pluginclassname=AdminSammelbearbeiten
 origin=data-quest
 version=2.1
 studipMinVersion=4.0
+studipMaxVersion=4.4.99
