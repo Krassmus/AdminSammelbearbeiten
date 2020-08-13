@@ -24,6 +24,9 @@ class BulkController extends PluginController
             foreach ($this->courses as $course) {
                 if ($GLOBALS['perm']->have_studip_perm("tutor", $course->getId())) {
                     foreach ($changes as $change) {
+                        if ($change === "veranstaltungsnummer") {
+                            $course['veranstaltungsnummer'] = Request::get("veranstaltungsnummer");
+                        }
                         if ($change === "teilnehmer") {
                             $course['teilnehmer'] = Request::get("teilnehmer");
                         }

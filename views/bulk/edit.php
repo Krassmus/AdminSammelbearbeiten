@@ -27,23 +27,39 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>
-                        <label>
-                            <input type="checkbox" name="change[]" value="teilnehmer" onChange="jQuery(this).closest('tr').toggleClass('active');">
-                            <?= _("Maximale Teilnehmerzahl") ?>
-                        </label>
-                    </td>
-                    <td>
-                        <? $value = $controller->getAverageValue($courses, "teilnehmer") ?>
-                        <input type="text"
-                               name="teilnehmer"
-                               value="<?= htmlReady($value)?>"
-                               placeholder="<?= htmlReady($value || $value === '0' ? $value : ($value === false ? _("Unterschiedliche Werte") : _("Wert eingeben")))?>"
-                               onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
-                    </td>
-                </tr>
-                <tr>
+            <tr>
+                <td>
+                    <label>
+                        <input type="checkbox" name="change[]" value="veranstaltungsnummer" onChange="jQuery(this).closest('tr').toggleClass('active');">
+                        <?= _("Veranstaltungsnummer") ?>
+                    </label>
+                </td>
+                <td>
+                    <? $value = $controller->getAverageValue($courses, "veranstaltungsnummer") ?>
+                    <input type="text"
+                           name="veranstaltungsnummer"
+                           value="<?= htmlReady($value)?>"
+                           placeholder="<?= htmlReady($value || $value === '0' ? $value : ($value === false ? _("Unterschiedliche Werte") : _("Wert eingeben")))?>"
+                           onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>
+                        <input type="checkbox" name="change[]" value="teilnehmer" onChange="jQuery(this).closest('tr').toggleClass('active');">
+                        <?= _("Maximale Teilnehmerzahl") ?>
+                    </label>
+                </td>
+                <td>
+                    <? $value = $controller->getAverageValue($courses, "teilnehmer") ?>
+                    <input type="text"
+                           name="teilnehmer"
+                           value="<?= htmlReady($value)?>"
+                           placeholder="<?= htmlReady($value || $value === '0' ? $value : ($value === false ? _("Unterschiedliche Werte") : _("Wert eingeben")))?>"
+                           onChange="jQuery(this).closest('tr').addClass('active').find('td:first-child :checkbox').prop('checked', 'checked');">
+                </td>
+            </tr>
+            <tr>
                     <td>
                         <label>
                             <input type="checkbox" name="change[]" value="ects" onChange="jQuery(this).closest('tr').toggleClass('active');">
