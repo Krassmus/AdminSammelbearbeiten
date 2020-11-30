@@ -108,6 +108,9 @@ class BulkController extends PluginController
                                 $course_value['range_id'] = $course->getId();
                                 $course_value['datafield_id'] = $datafield_id;
                                 $course_value['sec_range_id'] = '';
+                                if (StudipVersion::newerThan("4.0.99")) {
+                                    $course_value['lang'] = '';
+                                }
                             }
                             $course_value->content = Request::get("datafield_".$datafield_id, '');
                             $course_value->store();
